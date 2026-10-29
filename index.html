@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Con Sóc Biết Lọ - Web Truyện Tranh Cute</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Quicksand & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            pink: '#FFD1DC',
+                            pinkDark: '#FF94B8',
+                            mint: '#C7EFCF',
+                            mintDark: '#8EE4AF',
+                            yellow: '#FFF5BA',
+                            yellowDark: '#FDE047',
+                            purple: '#E2D4F0',
+                            purpleDark: '#B388EB',
+                            cream: '#FFF9F2',
+                            brown: '#8B5A2B',
+                            brownLight: '#D4A373'
+                        }
+                    },
+                    fontFamily: {
+                        cute: ['Quicksand', 'Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', 'Nunito', sans-serif;
+            background-color: #FFF9F2;
+            background-image: 
+                radial-gradient(#FF94B8 0.75px, transparent 0.75px), 
+                radial-gradient(#B388EB 0.75px, #FFF9F2 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF9F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF94B8;
+            border-radius: 10px;
+        }
+
+        /* Floating Stars Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-float-slow {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Sparkle Effects */
+        .star-decor {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .manga-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .manga-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+    </style>
+</head>
+<body class="text-gray-700 min-h-screen flex flex-col justify-between">
+
+    <!-- Top Star Decorations -->
+    <div class="fixed top-4 left-4 text-2xl text-yellow-400 animate-float star-decor z-0"><i class="fa-solid fa-star"></i></div>
+    <div class="fixed top-12 right-8 text-xl text-pink-300 animate-float-slow star-decor z-0"><i class="fa-solid fa-sparkles"></i></div>
+    <div class="fixed bottom-10 left-8 text-3xl text-purple-300 animate-float-slow star-decor z-0"><i class="fa-solid fa-star"></i></div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-4 border-pastel-pink shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" onclick="showHome()" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 bg-pastel-pink rounded-full flex items-center justify-center text-2xl shadow-inner transform group-hover:rotate-12 transition-transform">
+                    🐿️
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-pastel-brown tracking-wide flex items-center gap-1">
+                        Con Sóc Biết Lọ
+                        <span class="text-xs px-2 py-0.5 bg-pastel-yellow text-amber-800 rounded-full font-bold border border-amber-300">Cute Manga</span>
+                    </h1>
+                    <p class="text-xs text-pink-500 font-semibold">Góc truyện tranh mộng mơ 💫</p>
+                </div>
+            </a>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Tìm kiếm truyện sóc nhỏ thích..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-full bg-pastel-cream border-2 border-pastel-pink focus:outline-none focus:border-pastel-purple text-sm transition-all shadow-inner">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-pink-400"></i>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons & User Info -->
+            <div class="flex items-center gap-3">
+                <button id="adminBtn" onclick="showAdminPanel()" class="hidden px-4 py-2 bg-pastel-purple text-purple-900 rounded-full font-bold text-sm hover:bg-purple-300 transition-all shadow-md flex items-center gap-1.5 border-2 border-purple-300">
+                    <i class="fa-solid fa-crown text-yellow-500"></i> Quản Lý
+                </button>
+
+                <div id="userSection" class="flex items-center gap-2">
+                    <!-- Dynamic rendering by JS -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow z-10 relative">
+
+        <!-- VIEW 1: HOME PAGE -->
+        <section id="homeView">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-mint p-6 sm:p-8 rounded-3xl shadow-lg mb-8 relative overflow-hidden border-4 border-white">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-white/80 text-pink-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-block mb-2">✨ Thế giới truyện dễ thương</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-800 mb-3">Chào mừng bạn đến với tổ sóc nhỏ! 🌰</h2>
+                    <p class="text-gray-700 text-sm sm:text-base font-medium mb-4">Đọc những câu chuyện ngọt ngào, hài hước và ấm áp cùng Hạt Dẻ và những người bạn squirrel siêu cute nhé!</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterGenre('Tất cả')" class="genre-pill px-4 py-1.5 bg-white text-gray-800 rounded-full text-xs font-bold shadow hover:bg-pastel-yellow transition-all active-pill">✨ Tất cả</button>
+                        <button onclick="filterGenre('Hài Hước')" class="genre-pill px-4 py-1.5 bg-white/80 text-gray-700 rounded-full text-xs font-bold hover:bg-pastel-yellow transition-all">😂 Hài Hước</button>
+                        <button onclick="filterGenre('Đời Thường')" class="genre-pill px-4 py-1.5 bg-white/80 text-gray-700 rounded-full text-xs font-bold hover:bg-pastel-yellow transition-all">🏠 Đời Thường</button>
+                        <button onclick="filterGenre('Phiêu Lưu')" class="genre-pill px-4 py-1.5 bg-white/80 text-gray-700 rounded-full text-xs font-bold hover:bg-pastel-yellow transition-all">🌲 Phiêu Lưu</button>
+                        <button onclick="filterGenre('Tình Cảm')" class="genre-pill px-4 py-1.5 bg-white/80 text-gray-700 rounded-full text-xs font-bold hover:bg-pastel-yellow transition-all">💖 Tình Cảm</button>
+                    </div>
+                </div>
+                <div class="absolute right-4 bottom-0 opacity-40 sm:opacity-90 pointer-events-none text-8xl select-none">
+                    🐿️✨
+                </div>
+            </div>
+
+            <!-- Manga Grid Title -->
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-400"></i> Danh Sách Truyện Tranh
+                </h3>
+                <span id="storyCount" class="text-xs font-bold bg-pastel-mint text-emerald-800 px-3 py-1 rounded-full">0 bộ truyện</span>
+            </div>
+
+            <!-- Manga Cards Container -->
+            <div id="mangaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <!-- JS Inject Manga Cards Here -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: MANGA DETAIL & CHAPTER READER -->
+        <section id="readerView" class="hidden">
+            <!-- Breadcrumb Navigation -->
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
+                <button onclick="showHome()" class="hover:text-pink-500 flex items-center gap-1"><i class="fa-solid fa-house"></i> Trang chủ</button>
+                <span>/</span>
+                <span id="readerBreadcrumb" class="text-gray-800 font-bold">...</span>
+            </div>
+
+            <!-- Manga Info Box -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-pastel-pink mb-8 flex flex-col md:flex-row gap-6">
+                <img id="detailCover" class="w-full md:w-48 h-64 object-cover rounded-2xl shadow-md border-2 border-pastel-yellow" src="" alt="Cover">
+                <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span id="detailGenre" class="bg-pastel-purple text-purple-800 text-xs font-bold px-3 py-1 rounded-full">Thể loại</span>
+                            <span id="detailViews" class="bg-pastel-yellow text-amber-800 text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-eye"></i> 0</span>
+                        </div>
+                        <h2 id="detailTitle" class="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2">Tên truyện</h2>
+                        <p class="text-sm text-pink-500 font-bold mb-3"><i class="fa-solid fa-pen-nib"></i> Tác giả: <span id="detailAuthor">...</span></p>
+                        <p id="detailDesc" class="text-gray-600 text-sm leading-relaxed mb-4">Mô tả truyện...</p>
+                    </div>
+
+                    <!-- Chapter Selector Bar -->
+                    <div class="bg-pastel-cream p-4 rounded-2xl border border-amber-200 flex flex-wrap items-center justify-between gap-4">
+                        <label for="chapterSelect" class="font-bold text-gray-700 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-book-open text-pink-400"></i> Chọn chương:
+                        </label>
+                        <select id="chapterSelect" onchange="changeChapter(this.value)" class="flex-1 max-w-xs bg-white border-2 border-pastel-pink rounded-xl px-3 py-2 text-sm font-bold focus:outline-none">
+                            <!-- JS Inject Chapters -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- READER CONTAINER -->
+            <div class="bg-gray-900 rounded-3xl p-4 sm:p-8 shadow-2xl border-4 border-pastel-pink max-w-4xl mx-auto">
+                <!-- Navigation Top -->
+                <div class="flex justify-between items-center mb-6 text-white bg-gray-800/80 p-3 rounded-2xl">
+                    <button id="prevBtnTop" onclick="navigateChapter(-1)" class="px-4 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-xs hover:bg-pink-300 disabled:opacity-40 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i> Tập trước
+                    </button>
+                    <span id="currentChapterTitle" class="font-bold text-xs sm:text-sm text-pastel-yellow">Chương 1</span>
+                    <button id="nextBtnTop" onclick="navigateChapter(1)" class="px-4 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-xs hover:bg-pink-300 disabled:opacity-40 transition-all">
+                        Tập sau <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Manga Pages Display -->
+                <div id="readerPages" class="flex flex-col items-center gap-4 min-h-[400px]">
+                    <!-- JS Injects Image Pages Here -->
+                </div>
+
+                <!-- Navigation Bottom -->
+                <div class="flex justify-between items-center mt-6 text-white bg-gray-800/80 p-3 rounded-2xl">
+                    <button id="prevBtnBottom" onclick="navigateChapter(-1)" class="px-4 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-xs hover:bg-pink-300 disabled:opacity-40 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i> Tập trước
+                    </button>
+                    <button id="nextBtnBottom" onclick="navigateChapter(1)" class="px-4 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-xs hover:bg-pink-300 disabled:opacity-40 transition-all">
+                        Tập sau <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- COMMENTS SECTION -->
+            <div class="mt-10 max-w-4xl mx-auto bg-white rounded-3xl p-6 border-2 border-pastel-mint shadow-md">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    💬 Bình luận từ độc giả (<span id="commentCount">0</span>)
+                </h3>
+                
+                <!-- Comment Form -->
+                <div class="mb-6">
+                    <textarea id="commentInput" rows="3" placeholder="Viết cảm nghĩ dễ thương của bạn về chương này..." 
+                              class="w-full p-3 rounded-2xl border-2 border-pastel-mint focus:outline-none focus:border-emerald-400 text-sm bg-pastel-cream/50 mb-2 resize-none"></textarea>
+                    <button onclick="addComment()" class="px-5 py-2 bg-pastel-mint text-emerald-900 font-bold rounded-xl text-sm hover:bg-emerald-300 shadow transition-all">
+                        Gửi bình luận ✨
+                    </button>
+                </div>
+
+                <!-- Comment List -->
+                <div id="commentsList" class="space-y-3">
+                    <!-- Dynamic Comments -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: ADMIN PANEL (MANAGEMENT) -->
+        <section id="adminView" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-black text-gray-800 flex items-center gap-2">
+                    👑 Trang Quản Lý Web Truyện (Admin Panel)
+                </h2>
+                <button onclick="showHome()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-300">
+                    <i class="fa-solid fa-xmark"></i> Đóng
+                </button>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="flex gap-2 mb-6 border-b-2 border-pastel-pink pb-2">
+                <button id="tabStoryBtn" onclick="switchAdminTab('story')" class="px-5 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-sm shadow">
+                    📚 Quản Lý & Đăng Truyện
+                </button>
+                <button id="tabUserBtn" onclick="switchAdminTab('user')" class="px-5 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-pastel-purple">
+                    👥 Phân Quyền Thành Viên
+                </button>
+            </div>
+
+            <!-- TAB 1: STORY MANAGEMENT -->
+            <div id="adminStoryTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Form Post / Edit Story -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-3xl border-2 border-pastel-pink shadow-md h-fit">
+                        <h3 id="formTitle" class="text-lg font-extrabold text-pink-600 mb-4 flex items-center gap-2">
+                            ➕ Đăng Truyện Mới
+                        </h3>
+                        <form id="storyForm" onsubmit="handleSaveStory(event)" class="space-y-4">
+                            <input type="hidden" id="editStoryId">
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Tên truyện *</label>
+                                <input type="text" id="storyTitle" required placeholder="Ví dụ: Chuyện Sóc Nhỏ Đi Cắm Trại" 
+                                       class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-sm focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Tác giả</label>
+                                <input type="text" id="storyAuthor" placeholder="Tên tác giả hoặc NXB" 
+                                       class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-sm focus:outline-none">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">Thể loại</label>
+                                    <select id="storyGenre" class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-sm focus:outline-none font-semibold">
+                                        <option value="Hài Hước">Hài Hước</option>
+                                        <option value="Đời Thường">Đời Thường</option>
+                                        <option value="Phiêu Lưu">Phiêu Lưu</option>
+                                        <option value="Tình Cảm">Tình Cảm</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">Ảnh bìa (URL)</label>
+                                    <input type="url" id="storyCover" required placeholder="https://..." 
+                                           class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-sm focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Mô tả ngắn</label>
+                                <textarea id="storyDesc" rows="2" placeholder="Tóm tắt nội dung hấp dẫn..." 
+                                          class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-sm focus:outline-none resize-none"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Link Ảnh Các Chương (Phân cách bằng dấu phẩy)</label>
+                                <p class="text-[10px] text-gray-400 mb-1">Mỗi link tương ứng 1 chương/trang truyện ảnh</p>
+                                <textarea id="storyChapters" rows="3" required placeholder="https://image1.jpg, https://image2.jpg" 
+                                          class="w-full px-3 py-2 border-2 border-pastel-pink rounded-xl text-xs focus:outline-none font-mono resize-none"></textarea>
+                            </div>
+
+                            <div class="flex gap-2 pt-2">
+                                <button type="submit" class="flex-1 bg-pastel-pink font-bold text-pink-900 py-2.5 rounded-xl text-sm hover:bg-pink-300 shadow transition-all">
+                                    💾 Lưu Truyện
+                                </button>
+                                <button type="button" onclick="resetStoryForm()" class="px-3 bg-gray-200 text-gray-600 font-bold rounded-xl text-xs hover:bg-gray-300">
+                                    Hủy
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Story List Table -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-3xl border-2 border-pastel-purple shadow-md">
+                        <h3 class="text-lg font-extrabold text-purple-700 mb-4">📖 Danh Sách Truyện Hiện Có</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="bg-pastel-purple/40 text-purple-900 border-b-2 border-pastel-purple">
+                                        <th class="p-3">Bìa</th>
+                                        <th class="p-3">Tên Truyện</th>
+                                        <th class="p-3">Thể loại</th>
+                                        <th class="p-3">Số tập</th>
+                                        <th class="p-3 text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminStoryTable">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: USER PERMISSIONS -->
+            <div id="adminUserTab" class="hidden">
+                <div class="bg-white p-6 rounded-3xl border-2 border-pastel-purple shadow-md max-w-2xl mx-auto">
+                    <h3 class="text-lg font-extrabold text-purple-700 mb-4">👥 Quản Lý Phân Quyền Thành Viên</h3>
+                    <p class="text-xs text-gray-500 mb-4">Lưu ý: Chỉ Chủ Web (Admin) mới có quyền thay đổi phân quyền cho các thành viên khác.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="bg-pastel-cream text-amber-900 border-b-2 border-amber-200">
+                                    <th class="p-3">Tên tài khoản</th>
+                                    <th class="p-3">Vai trò hiện tại</th>
+                                    <th class="p-3 text-right">Cấp quyền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUserTable">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t-4 border-pastel-pink mt-12 py-6 text-center text-xs text-gray-500 relative z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-bold text-gray-700 text-sm mb-1">🐿️ Con Sóc Biết Lọ - Manga Cute World 🌰</p>
+            <p>© 2026 Bản quyền thuộc về Sóc Nhỏ. Thiết kế với tone pastel ngọt ngào & tràn ngập ngôi sao ✨</p>
+        </div>
+    </footer>
+
+    <!-- MODAL: LOGIN / REGISTER -->
+    <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-pastel-pink relative animate-float-slow">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="text-4xl mb-2">🐿️</div>
+                <h3 id="modalAuthTitle" class="text-2xl font-black text-gray-800">Đăng Nhập Sóc Nhỏ</h3>
+                <p class="text-xs text-pink-500 font-semibold">Tham gia cộng đồng đọc truyện dễ thương</p>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Tên tài khoản</label>
+                    <input type="text" id="authUsername" required placeholder="Nhập tên của bạn..." 
+                           class="w-full px-4 py-2.5 rounded-2xl border-2 border-pastel-pink text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mật khẩu</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" 
+                           class="w-full px-4 py-2.5 rounded-2xl border-2 border-pastel-pink text-sm focus:outline-none">
+                </div>
+
+                <div id="roleSelectContainer" class="hidden">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Đăng ký vai trò ban đầu</label>
+                    <select id="authRole" class="w-full px-4 py-2.5 rounded-2xl border-2 border-pastel-pink text-sm font-bold focus:outline-none">
+                        <option value="user">Độc giả (Chỉ xem & bình luận)</option>
+                        <option value="editor">Biên tập viên (Được đăng/xóa truyện)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-pastel-pink text-pink-900 font-bold rounded-2xl shadow hover:bg-pink-300 transition-all text-sm">
+                    Xác nhận ✨
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <button id="toggleAuthModeBtn" onclick="toggleAuthMode()" class="text-xs text-purple-600 font-bold hover:underline">
+                    Chưa có tài khoản? Đăng ký ngay!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-xl z-50 flex items-center gap-3 transition-all transform translate-y-20 opacity-0 border-2 border-pastel-yellow">
+        <span id="toastIcon" class="text-xl">✨</span>
+        <span id="toastMsg" class="text-sm font-bold">Thông báo!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==================== MOCK INITIAL DATA ==================== */
+        const DEFAULT_STORIES = [
+            {
+                id: 'story-1',
+                title: 'Con Sóc Biết Lọ & Hạt Dẻ Thần Kỳ',
+                author: 'Sóc Mộng Mơ',
+                genre: 'Hài Hước',
+                cover: 'https://images.unsplash.com/photo-1507666405768-8af8f34f2d36?auto=format&fit=crop&w=400&q=80',
+                description: 'Câu chuyện xoay quanh chú sóc nhỏ phát hiện ra chiếc lọ thần kỳ biết sản xuất ra những hạt dẻ thơm lừng mỗi khi ai đó mỉm cười!',
+                views: 1240,
+                chapters: [
+                    'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?auto=format&fit=crop&w=800&q=80'
+                ],
+                comments: [
+                    { user: 'Thỏ Bông', text: 'Truyện cute xỉu up xỉu down luôn ạ! 🥰', time: '10 phút trước' }
+                ]
+            },
+            {
+                id: 'story-2',
+                title: 'Cuộc Phiêu Lưu Của Sóc Béo In Khu Rừng Pastel',
+                author: 'Mina Kawaii',
+                genre: 'Phiêu Lưu',
+                cover: 'https://images.unsplash.com/photo-1504006833117-8886a355efbf?auto=format&fit=crop&w=400&q=80',
+                description: 'Sóc béo đi lạc vào khu rừng tràn ngập cây kẹo bông và những ngọn núi màu hồng pastel.',
+                views: 890,
+                chapters: [
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80'
+                ],
+                comments: []
+            },
+            {
+                id: 'story-3',
+                title: 'Nhật Ký Lớp Học Sóc Nhỏ',
+                author: 'Gấu Trúc Nơ',
+                genre: 'Đời Thường',
+                cover: 'https://images.unsplash.com/photo-1470093851219-69951fcbb533?auto=format&fit=crop&w=400&q=80',
+                description: 'Những mẩu chuyện học đường siêu ngốc nghếch và đáng yêu của các bạn sóc nhỏ.',
+                views: 2100,
+                chapters: [
+                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80'
+                ],
+                comments: []
+            }
+        ];
+
+        const DEFAULT_USERS = [
+            { username: 'admin', password: '123', role: 'admin' }, // Chủ Web
+            { username: 'editor1', password: '123', role: 'editor' }, // Được cấp quyền
+            { username: 'reader', password: '123', role: 'user' } // Khách / Độc giả
+        ];
+
+        /* ==================== STATE MANAGEMENT ==================== */
+        let stories = JSON.parse(localStorage.getItem('squirrel_stories')) || DEFAULT_STORIES;
+        let users = JSON.parse(localStorage.getItem('squirrel_users')) || DEFAULT_USERS;
+        let currentUser = JSON.parse(localStorage.getItem('squirrel_current_user')) || null;
+
+        let activeStory = null;
+        let activeChapterIndex = 0;
+        let selectedGenre = 'Tất cả';
+        let isAuthRegisterMode = false;
+
+        /* ==================== INIT APP ==================== */
+        window.onload = function() {
+            saveToStorage();
+            updateUserUI();
+            renderMangaGrid();
+            renderAdminTables();
+        };
+
+        function saveToStorage() {
+            localStorage.setItem('squirrel_stories', JSON.stringify(stories));
+            localStorage.setItem('squirrel_users', JSON.stringify(users));
+            localStorage.setItem('squirrel_current_user', JSON.stringify(currentUser));
+        }
+
+        /* ==================== TOAST & UTILS ==================== */
+        function showToast(msg, icon = '✨') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').innerText = icon;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        /* ==================== AUTH SYSTEM ==================== */
+        function updateUserUI() {
+            const userSection = document.getElementById('userSection');
+            const adminBtn = document.getElementById('adminBtn');
+
+            if (currentUser) {
+                // Show role badge
+                let roleBadge = '';
+                if (currentUser.role === 'admin') roleBadge = '<span class="text-[10px] bg-yellow-300 text-amber-900 px-2 py-0.5 rounded-full font-bold">Chủ Web</span>';
+                else if (currentUser.role === 'editor') roleBadge = '<span class="text-[10px] bg-purple-300 text-purple-900 px-2 py-0.5 rounded-full font-bold">Quản lý</span>';
+                else roleBadge = '<span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Thành viên</span>';
+
+                userSection.innerHTML = `
+                    <div class="flex items-center gap-2 bg-pastel-cream px-3 py-1.5 rounded-full border border-pastel-pink">
+                        <span class="text-sm font-bold text-gray-800">🐿️ ${currentUser.username}</span>
+                        ${roleBadge}
+                        <button onclick="handleLogout()" class="text-xs text-red-500 font-bold hover:underline ml-1">Đăng xuất</button>
+                    </div>
+                `;
+
+                // Show admin button for admin or editor
+                if (currentUser.role === 'admin' || currentUser.role === 'editor') {
+                    adminBtn.classList.remove('hidden');
+                } else {
+                    adminBtn.classList.add('hidden');
+                }
+            } else {
+                adminBtn.classList.add('hidden');
+                userSection.innerHTML = `
+                    <button onclick="openAuthModal()" class="px-4 py-2 bg-pastel-pink text-pink-900 font-bold rounded-full text-xs hover:bg-pink-300 shadow transition-all border border-pink-300">
+                        🔑 Đăng nhập / Đăng ký
+                    </button>
+                `;
+            }
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function toggleAuthMode() {
+            isAuthRegisterMode = !isAuthRegisterMode;
+            document.getElementById('modalAuthTitle').innerText = isAuthRegisterMode ? 'Đăng Ký Sóc Nhỏ' : 'Đăng Nhập Sóc Nhỏ';
+            document.getElementById('roleSelectContainer').classList.toggle('hidden', !isAuthRegisterMode);
+            document.getElementById('toggleAuthModeBtn').innerText = isAuthRegisterMode ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Đăng ký ngay!';
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+
+            if (!username || !password) return;
+
+            if (isAuthRegisterMode) {
+                // Register
+                const exists = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+                if (exists) {
+                    showToast('Tên tài khoản này đã tồn tại!', '⚠️');
+                    return;
+                }
+                const role = document.getElementById('authRole').value;
+                const newUser = { username, password, role };
+                users.push(newUser);
+                currentUser = newUser;
+                saveToStorage();
+                showToast('Đăng ký tài khoản thành công!', '🎉');
+            } else {
+                // Login
+                const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+                if (user) {
+                    currentUser = user;
+                    saveToStorage();
+                    showToast(`Chào mừng ${user.username} trở lại!`, '🌰');
+                } else {
+                    showToast('Sai tên tài khoản hoặc mật khẩu!', '❌');
+                    return;
+                }
+            }
+
+            closeAuthModal();
+            updateUserUI();
+            renderAdminTables();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            saveToStorage();
+            updateUserUI();
+            showHome();
+            showToast('Đã đăng xuất tài khoản', '👋');
+        }
+
+        /* ==================== HOME & MANGA LIST ==================== */
+        function renderMangaGrid() {
+            const grid = document.getElementById('mangaGrid');
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = stories.filter(s => {
+                const matchesGenre = selectedGenre === 'Tất cả' || s.genre === selectedGenre;
+                const matchesSearch = s.title.toLowerCase().includes(searchKeyword) || s.author.toLowerCase().includes(searchKeyword);
+                return matchesGenre && matchesSearch;
+            });
+
+            document.getElementById('storyCount').innerText = `${filtered.length} bộ truyện`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-gray-400 font-bold">
+                        <div class="text-5xl mb-2">🐿️💧</div>
+                        Hạt dẻ chưa tìm thấy bộ truyện nào phù hợp cả...
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(story => `
+                <div onclick="openStoryReader('${story.id}')" class="manga-card bg-white rounded-2xl p-3 shadow-md hover:shadow-xl border-2 border-pastel-pink cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="relative overflow-hidden rounded-xl mb-3 aspect-[3/4] bg-pastel-cream">
+                            <img src="${story.cover}" alt="${story.title}" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://placehold.co/400x500/FFD1DC/8B5A2B?text=Squirrel+Manga'">
+                            <span class="absolute top-2 left-2 bg-white/90 text-pink-600 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow">
+                                ${story.genre}
+                            </span>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-gray-800 line-clamp-2 mb-1 hover:text-pink-500 transition-colors">${story.title}</h4>
+                        <p class="text-xs text-gray-500 font-medium mb-2"><i class="fa-solid fa-pen"></i> ${story.author || 'Sóc Tác Giả'}</p>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 pt-2 border-t border-gray-100">
+                        <span>📖 ${story.chapters.length} tập</span>
+                        <span>👁️ ${story.views || 0}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterGenre(genre) {
+            selectedGenre = genre;
+            // Update active state on buttons
+            document.querySelectorAll('.genre-pill').forEach(btn => {
+                if (btn.innerText.includes(genre)) {
+                    btn.classList.add('bg-pastel-yellow', 'text-gray-800');
+                    btn.classList.remove('bg-white/80', 'text-gray-700');
+                } else {
+                    btn.classList.remove('bg-pastel-yellow', 'text-gray-800');
+                    btn.classList.add('bg-white/80', 'text-gray-700');
+                }
+            });
+            renderMangaGrid();
+        }
+
+        function handleSearch() {
+            renderMangaGrid();
+        }
+
+        /* ==================== READER VIEW ==================== */
+        function openStoryReader(storyId) {
+            const story = stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            // Increment views
+            story.views = (story.views || 0) + 1;
+            saveToStorage();
+
+            activeStory = story;
+            activeChapterIndex = 0;
+
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('readerView').classList.remove('hidden');
+
+            // Render Info
+            document.getElementById('readerBreadcrumb').innerText = story.title;
+            document.getElementById('detailCover').src = story.cover;
+            document.getElementById('detailTitle').innerText = story.title;
+            document.getElementById('detailAuthor').innerText = story.author || 'Khuyết danh';
+            document.getElementById('detailGenre').innerText = story.genre;
+            document.getElementById('detailViews').innerHTML = `<i class="fa-solid fa-eye"></i> ${story.views}`;
+            document.getElementById('detailDesc').innerText = story.description || 'Chưa có mô tả cho bộ truyện này.';
+
+            // Chapter Dropdown
+            const select = document.getElementById('chapterSelect');
+            select.innerHTML = story.chapters.map((_, idx) => `<option value="${idx}">Chương ${idx + 1}</option>`).join('');
+
+            renderChapterContent();
+            renderComments();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderChapterContent() {
+            if (!activeStory) return;
+            const chapterImg = activeStory.chapters[activeChapterIndex];
+
+            document.getElementById('currentChapterTitle').innerText = `Chương ${activeChapterIndex + 1} / ${activeStory.chapters.length}`;
+            document.getElementById('chapterSelect').value = activeChapterIndex;
+
+            // Render Image Page
+            const container = document.getElementById('readerPages');
+            container.innerHTML = `
+                <img src="${chapterImg}" alt="Trang truyện" class="max-w-full rounded-2xl shadow-lg border-2 border-white" 
+                     onerror="this.src='https://placehold.co/800x1000/FFF5BA/8B5A2B?text=Ảnh+Chương+${activeChapterIndex + 1}+Lỗi'">
+            `;
+
+            // Update Navigation Buttons
+            const isFirst = activeChapterIndex === 0;
+            const isLast = activeChapterIndex === activeStory.chapters.length - 1;
+
+            ['Top', 'Bottom'].forEach(pos => {
+                document.getElementById(`prevBtn${pos}`).disabled = isFirst;
+                document.getElementById(`nextBtn${pos}`).disabled = isLast;
+            });
+        }
+
+        function changeChapter(idx) {
+            activeChapterIndex = parseInt(idx);
+            renderChapterContent();
+        }
+
+        function navigateChapter(dir) {
+            const newIndex = activeChapterIndex + dir;
+            if (newIndex >= 0 && newIndex < activeStory.chapters.length) {
+                activeChapterIndex = newIndex;
+                renderChapterContent();
+            }
+        }
+
+        /* ==================== COMMENTS ==================== */
+        function renderComments() {
+            if (!activeStory) return;
+            const comments = activeStory.comments || [];
+            document.getElementById('commentCount').innerText = comments.length;
+
+            const list = document.getElementById('commentsList');
+            if (comments.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 italic">Chưa có bình luận nào. Hãy là chú sóc đầu tiên כדי để lại cảm nghĩ nhé!</p>`;
+                return;
+            }
+
+            list.innerHTML = comments.map(c => `
+                <div class="bg-pastel-cream/70 p-3 rounded-2xl border border-pink-100 flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-full bg-pastel-pink flex items-center justify-center text-sm">🐿️</div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs text-gray-800">${c.user}</span>
+                            <span class="text-[10px] text-gray-400">${c.time || 'Mới xong'}</span>
+                        </div>
+                        <p class="text-xs text-gray-700 mt-1">${c.text}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addComment() {
+            if (!currentUser) {
+                showToast('Bạn cần đăng nhập để viết bình luận nhé!', '🔑');
+                openAuthModal();
+                return;
+            }
+
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!activeStory.comments) activeStory.comments = [];
+            activeStory.comments.unshift({
+                user: currentUser.username,
+                text: text,
+                time: 'Vừa xong'
+            });
+
+            saveToStorage();
+            input.value = '';
+            renderComments();
+            showToast('Đã gửi bình luận cute!', '💌');
+        }
+
+        /* ==================== ADMIN PANEL & PERMISSIONS ==================== */
+        function showAdminPanel() {
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'editor')) {
+                showToast('Bạn không có quyền truy cập trang quản lý!', '⛔');
+                return;
+            }
+
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('readerView').classList.add('hidden');
+            document.getElementById('adminView').classList.remove('hidden');
+            renderAdminTables();
+        }
+
+        function switchAdminTab(tab) {
+            const storyTab = document.getElementById('adminStoryTab');
+            const userTab = document.getElementById('adminUserTab');
+            const storyBtn = document.getElementById('tabStoryBtn');
+            const userBtn = document.getElementById('tabUserBtn');
+
+            if (tab === 'story') {
+                storyTab.classList.remove('hidden');
+                userTab.classList.add('hidden');
+                storyBtn.className = "px-5 py-2 bg-pastel-pink text-pink-900 rounded-xl font-bold text-sm shadow";
+                userBtn.className = "px-5 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-pastel-purple";
+            } else {
+                storyTab.classList.add('hidden');
+                userTab.classList.remove('hidden');
+                userBtn.className = "px-5 py-2 bg-pastel-purple text-purple-900 rounded-xl font-bold text-sm shadow";
+                storyBtn.className = "px-5 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-pastel-pink";
+            }
+        }
+
+        function renderAdminTables() {
+            // Story Table
+            const storyTable = document.getElementById('adminStoryTable');
+            storyTable.innerHTML = stories.map(s => `
+                <tr class="border-b border-gray-100 hover:bg-pastel-cream/50">
+                    <td class="p-3">
+                        <img src="${s.cover}" class="w-10 h-12 object-cover rounded-md" onerror="this.src='https://placehold.co/100x120'">
+                    </td>
+                    <td class="p-3 font-bold text-gray-800">${s.title}</td>
+                    <td class="p-3"><span class="bg-pastel-purple text-purple-800 text-xs px-2 py-0.5 rounded-full font-bold">${s.genre}</span></td>
+                    <td class="p-3 font-semibold text-xs">${s.chapters.length} tập</td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="editStory('${s.id}')" class="px-2.5 py-1 bg-yellow-100 text-amber-800 rounded-lg text-xs font-bold hover:bg-yellow-200">
+                            ✏️ Sửa
+                        </button>
+                        <button onclick="deleteStory('${s.id}')" class="px-2.5 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200">
+                            🗑️ Xóa
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // User Permissions Table
+            const userTable = document.getElementById('adminUserTable');
+            userTable.innerHTML = users.map(u => `
+                <tr class="border-b border-gray-100 hover:bg-pastel-cream/30">
+                    <td class="p-3 font-bold text-gray-800">🐿️ ${u.username}</td>
+                    <td class="p-3">
+                        <span class="text-xs px-2 py-1 rounded-full font-bold ${
+                            u.role === 'admin' ? 'bg-yellow-200 text-amber-900' : 
+                            u.role === 'editor' ? 'bg-purple-200 text-purple-900' : 'bg-emerald-100 text-emerald-800'
+                        }">
+                            ${u.role === 'admin' ? 'Chủ Web (Admin)' : u.role === 'editor' ? 'Quản lý (Editor)' : 'Thành viên'}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        ${u.role === 'admin' ? '<span class="text-xs text-gray-400 font-bold italic">Tối cao</span>' : `
+                            <select onchange="changeUserRole('${u.username}', this.value)" ${currentUser && currentUser.role !== 'admin' ? 'disabled' : ''} 
+                                    class="text-xs bg-white border border-gray-300 rounded-lg px-2 py-1 font-bold">
+                                <option value="user" ${u.role === 'user' ? 'selected' : ''}>Thành viên</option>
+                                <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Cấp quyền Editor</option>
+                            </select>
+                        `}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        /* ==================== STORY ACTIONS (CREATE/UPDATE/DELETE) ==================== */
+        function handleSaveStory(e) {
+            e.preventDefault();
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'editor')) {
+                showToast('Bạn không có quyền đăng hoặc sửa truyện!', '🚫');
+                return;
+            }
+
+            const editId = document.getElementById('editStoryId').value;
+            const title = document.getElementById('storyTitle').value.trim();
+            const author = document.getElementById('storyAuthor').value.trim();
+            const genre = document.getElementById('storyGenre').value;
+            const cover = document.getElementById('storyCover').value.trim();
+            const description = document.getElementById('storyDesc').value.trim();
+            const chaptersRaw = document.getElementById('storyChapters').value.trim();
+
+            const chapters = chaptersRaw.split(',').map(url => url.trim()).filter(url => url.length > 0);
+
+            if (chapters.length === 0) {
+                showToast('Vui lòng nhập ít nhất 1 link ảnh chương!', '⚠️');
+                return;
+            }
+
+            if (editId) {
+                // Edit existing
+                const index = stories.findIndex(s => s.id === editId);
+                if (index !== -1) {
+                    stories[index] = { ...stories[index], title, author, genre, cover, description, chapters };
+                    showToast('Đã cập nhật bộ truyện!', '✨');
+                }
+            } else {
+                // Create new
+                const newStory = {
+                    id: 'story-' + Date.now(),
+                    title,
+                    author,
+                    genre,
+                    cover,
+                    description,
+                    views: 0,
+                    chapters,
+                    comments: []
+                };
+                stories.unshift(newStory);
+                showToast('Đã đăng truyện mới thành công!', '🎉');
+            }
+
+            saveToStorage();
+            resetStoryForm();
+            renderMangaGrid();
+            renderAdminTables();
+        }
+
+        function editStory(id) {
+            const story = stories.find(s => s.id === id);
+            if (!story) return;
+
+            document.getElementById('editStoryId').value = story.id;
+            document.getElementById('storyTitle').value = story.title;
+            document.getElementById('storyAuthor').value = story.author || '';
+            document.getElementById('storyGenre').value = story.genre;
+            document.getElementById('storyCover').value = story.cover;
+            document.getElementById('storyDesc').value = story.description || '';
+            document.getElementById('storyChapters').value = story.chapters.join(', ');
+
+            document.getElementById('formTitle').innerText = '✏️ Chỉnh Sửa Truyện';
+        }
+
+        function deleteStory(id) {
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'editor')) {
+                showToast('Bạn không có quyền xóa truyện!', '🚫');
+                return;
+            }
+
+            if (confirm('Chú sóc nhỏ ơi, bạn có chắc chắn muốn xóa bộ truyện này không?')) {
+                stories = stories.filter(s => s.id !== id);
+                saveToStorage();
+                renderMangaGrid();
+                renderAdminTables();
+                showToast('Đã xóa bộ truyện khỏi tổ sóc!', '🗑️');
+            }
+        }
+
+        function resetStoryForm() {
+            document.getElementById('editStoryId').value = '';
+            document.getElementById('storyForm').reset();
+            document.getElementById('formTitle').innerText = '➕ Đăng Truyện Mới';
+        }
+
+        function changeUserRole(username, newRole) {
+            if (!currentUser || currentUser.role !== 'admin') {
+                showToast('Chỉ Chủ Web (Admin) mới có quyền đổi phân quyền!', '⛔');
+                return;
+            }
+
+            const targetUser = users.find(u => u.username === username);
+            if (targetUser) {
+                targetUser.role = newRole;
+                saveToStorage();
+                renderAdminTables();
+                showToast(`Đã thay đổi quyền của ${username} thành ${newRole}!`, '👑');
+            }
+        }
+
+        /* ==================== ROUTING / NAVIGATION ==================== */
+        function showHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.getElementById('readerView').classList.add('hidden');
+            document.getElementById('adminView').classList.add('hidden');
+            renderMangaGrid();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
